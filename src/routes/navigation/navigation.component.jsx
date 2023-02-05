@@ -10,12 +10,11 @@ import "./navigation.styles.scss";
 
 const Navigation = () => {
     //re run component when states update, or props changes
-    const { currentUser, setCurrentUser } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
     console.log(currentUser);
 
     const signOutHandler = async () => {
         await signOutUser();
-        setCurrentUser(null);
     };
 	return(
 		<Fragment>
