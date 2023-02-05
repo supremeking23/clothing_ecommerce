@@ -1,10 +1,22 @@
 
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 import { Outlet, Link } from 'react-router-dom';
+import { UserContext } from '../../context/user.context';
+
+import { signOutUser } from './../../utils/firebase/firebase.utils';
 
 import "./navigation.styles.scss";
 
+
 const Navigation = () => {
+    //re run component when states update, or props changes
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+    console.log(currentUser);
+
+    const signOutHandler = async () => {
+        await signOutUser();
+        setCurrentUser(null);
+    };
 	return(
 		<Fragment>
             {/* dont want to render anything, use this instead of div */}
@@ -16,9 +28,10 @@ const Navigation = () => {
                     <Link className="nav_link" to="/shop">
                         Shop
                     </Link>
-                    <Link className="nav_link" to="/auth">
+                    { currentUser ? (<span className="nav_link" onClick={signOutHandler}>Sign Out</span>) : 
+                    (<Link className="nav_link" to="/auth">
                         Sign In
-                    </Link>
+                    </Link>)}
                 </div>
 			</div>
             <Outlet />
@@ -27,3 +40,5 @@ const Navigation = () => {
 };
 
 export default Navigation;
+
+//rerendering from context video
