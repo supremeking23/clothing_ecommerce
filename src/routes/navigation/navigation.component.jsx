@@ -1,17 +1,24 @@
 
 import { Fragment, useContext } from 'react';
 import { Outlet, Link } from 'react-router-dom';
+
+import CartIcon from './../../components/cart-icon/cart-icon.component';
+import CartDropdown from './../../components/cart-dropdown/cart-dropdown.component';
 import { UserContext } from '../../context/user.context';
-
+import { CartContext } from './../../context/cart.context';
 import { signOutUser } from './../../utils/firebase/firebase.utils';
-
 import "./navigation.styles.scss";
+
+
+
 
 
 const Navigation = () => {
     //re run component when states update, or props changes
     const { currentUser } = useContext(UserContext);
     console.log(currentUser);
+
+    const {isCartOpen} = useContext(CartContext); 
 
     const signOutHandler = async () => {
         await signOutUser();
@@ -31,7 +38,10 @@ const Navigation = () => {
                     (<Link className="nav_link" to="/auth">
                         Sign In
                     </Link>)}
+                    <CartIcon />
                 </div>
+                {/* short circuit operator  must be both true , components are all trutyh value*/}
+                {isCartOpen && <CartDropdown /> }
 			</div>
             <Outlet />
 		</Fragment>
