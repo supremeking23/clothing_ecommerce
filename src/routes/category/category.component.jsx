@@ -1,5 +1,5 @@
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, Fragment } from "react";
 import { useParams } from "react-router-dom";
 import "./category.styles.scss";
 import { CategoryContext } from './../../context/categories.context';
@@ -17,14 +17,18 @@ const Category = () => {
 
 
     return(
-        <div className="category-container">
-            {   
-                //only render product if it has a value
-                // error occur because of data fetching (something to do with asyncronous approach but our code runs it syncrounously)
+        <Fragment>
+            <h2 className="title">{category.toUpperCase()}</h2>
+            <div className="category-container">
+                
+                {   
+                    //only render product if it has a value
+                    // error occur because of data fetching (something to do with asyncronous approach but our code runs it syncrounously)
 
-                products && products.map((product) => <ProductCard key={product.id} product={product} />)
-            }
-        </div>
+                    products && products.map((product) => <ProductCard key={product.id} product={product} />)
+                }
+            </div>
+        </Fragment>
     )
 
 };
