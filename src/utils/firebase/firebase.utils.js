@@ -17,8 +17,11 @@ import {
     getFirestore,
     doc, /** get document instance */
     getDoc,  /** access data on documents  */
-    setDoc /** set data */
-
+    setDoc, /** set data */
+    collection, /**get a collection reference */
+    writeBatch,
+    query,
+    getDocs
 } from "firebase/firestore";
 
 
@@ -46,6 +49,7 @@ provider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
 
 
 export const database = getFirestore();
@@ -99,6 +103,39 @@ export const signOutUser = async () => signOut(auth);
 
 export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
 
+
+//calling on external resources
+export const addCollectionAndDocuments = async(collectionKey, objectsToAdd) => {
+    const collectionRef = collection(database, collectionKey);
+
+    //transaction - successfull unit of work in database
+
+    const batch = writeBatch(database);
+    objectsToAdd.forEach((object) => {
+        const docRef = doc(collectionRef, object.title.toLowerCase());
+        batch.set(docRef, object);
+    });
+
+    await batch.commit();
+    console.log("done importing data");
+}; 
+
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(database, "categories");
+    const query_ref = query(collectionRef);
+
+    const querySnapshot = await getDocs(query_ref);
+    
+    const categoryMap  = querySnapshot.docs.reduce((accumulator, docSnapshot) => {
+        const {title, items} = docSnapshot.data();
+        
+        accumulator[title.toLowerCase()] = items;
+        return accumulator;
+    }, {});
+
+
+    return categoryMap;
+};
 
 /**
  * 
